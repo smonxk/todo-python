@@ -1,2 +1,6 @@
+clean
 cook
-Call
+buy a camera
+add new member
+how
+update os
