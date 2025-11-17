@@ -1,3 +1,12 @@
+def get_todos(filepath):
+    with open(filepath, "r") as file:
+        todos_local = file.readlines()
+    return todos_local
+
+def save_todos(filepath, todos_arg):
+    with open(filepath, "w") as file:
+        file.writelines(todos_arg)
+
 user_prompt = "Type add, show, edit, complete or exit: "
 
 while True:
@@ -7,16 +16,14 @@ while True:
     if user_action.startswith("add"):
         todo = user_action[4:]
 
-        with open("todos.txt", "r") as file:
-            todos = file.readlines()
+        todos = get_todos("todos.txt")
 
         todos.append(todo + "\n")
 
-        with open("todos.txt", "w") as file:
-            file.writelines(todos)
+        save_todos("todos.txt", todos)
+        
     elif user_action.startswith("show"):
-        with open("todos.txt", "r") as file:
-            todos = file.readlines()
+        todos = get_todos("todos.txt")
         
         for index, item in enumerate(todos):
             row = f"{index+1}. {item.strip("\n").capitalize()}"
@@ -26,31 +33,28 @@ while True:
             number = int(user_action[5:])
             new_todo = input("Enter a new todo: ")
             
-            with open("todos.txt", "r") as file:
-                todos = file.readlines()
+            todos = get_todos("todos.txt")
             
             todos[number - 1] = new_todo + "\n"
-
-            with open("todos.txt", "w") as file:
-                file.writelines(todos)
+            
+            save_todos("todos.txt", todos)
+            
         except ValueError:
             print("Your command is not valid.")
             continue
     elif user_action.startswith("complete"):
         try:   
             projNumber = int(user_action[9:])
-            
 
-            with open("todos.txt", "r") as file:
-                todos = file.readlines()
+            todos = get_todos("todos.txt")
             
             deleted_todo = todos.pop(projNumber - 1)
 
-            with open("todos.txt", "w") as file:
-                file.writelines(todos)
+            save_todos("todos.txt", todos)
 
             print(f"Todo {deleted_todo.strip("\n")} was removed from the list.")
-        except IndexError:
+        
+        except ValueError:
             print("There is no item with that number")
             continue
     elif user_action.startswith("exit"):
