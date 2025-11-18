@@ -1,11 +1,4 @@
-def get_todos(filepath):
-    with open(filepath, "r") as file:
-        todos_local = file.readlines()
-    return todos_local
-
-def save_todos(filepath, todos_arg):
-    with open(filepath, "w") as file:
-        file.writelines(todos_arg)
+import functions as fns
 
 user_prompt = "Type add, show, edit, complete or exit: "
 
@@ -16,14 +9,14 @@ while True:
     if user_action.startswith("add"):
         todo = user_action[4:]
 
-        todos = get_todos("todos.txt")
+        todos = fns.get_todos()
 
         todos.append(todo + "\n")
 
-        save_todos("todos.txt", todos)
+        fns.save_todos(todos)
         
     elif user_action.startswith("show"):
-        todos = get_todos("todos.txt")
+        todos = fns.get_todos()
         
         for index, item in enumerate(todos):
             row = f"{index+1}. {item.strip("\n").capitalize()}"
@@ -33,11 +26,11 @@ while True:
             number = int(user_action[5:])
             new_todo = input("Enter a new todo: ")
             
-            todos = get_todos("todos.txt")
+            todos = fns.get_todos()
             
             todos[number - 1] = new_todo + "\n"
             
-            save_todos("todos.txt", todos)
+            fns.save_todos(todos)
             
         except ValueError:
             print("Your command is not valid.")
@@ -46,11 +39,11 @@ while True:
         try:   
             projNumber = int(user_action[9:])
 
-            todos = get_todos("todos.txt")
+            todos = fns.get_todos()
             
             deleted_todo = todos.pop(projNumber - 1)
 
-            save_todos("todos.txt", todos)
+            fns.save_todos(todos)
 
             print(f"Todo {deleted_todo.strip("\n")} was removed from the list.")
         
