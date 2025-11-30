@@ -1,6 +1,11 @@
 import functions as fns
+import time as tm
+
+
 
 user_prompt = "Type add, show, edit, complete or exit: "
+date = tm.strftime("%d %b, %Y %H:%M:%S")
+print("It is: ", date)
 
 while True:
     user_action = input(user_prompt).lower().strip()
