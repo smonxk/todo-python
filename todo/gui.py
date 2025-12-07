@@ -9,11 +9,14 @@ list_box = gui.Listbox(values=fns.get_todos(), key="todo_select",
 edit_button = gui.Button("Edit")
 complete_button = gui.Button("Complete")
 
+exit_button = gui.Button("Exit")
+
 
 window = gui.Window("To-do app",
                     layout=[[label],
                             [input_box, add_button],
-                            [list_box, edit_button, complete_button]],
+                            [list_box, edit_button, complete_button],
+                            [exit_button]],
                     font=("Helvetica", 18))
 
 while True:
@@ -41,11 +44,13 @@ while True:
             window["todo"].update(value=values[event][0])
         case "Complete":
             todo_to_complete = values["todo_select"][0]
-            todos = fns.get_todos
+            todos = fns.get_todos()
             todos.remove(todo_to_complete)
             fns.save_todos(todos)
             window["todo_select"].update(values = todos)
             window["todo"].update(value = "")
+        case "Exit":
+            break
         case gui.WIN_CLOSED:
             break
 
