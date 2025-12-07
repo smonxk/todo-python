@@ -7,10 +7,13 @@ add_button = gui.Button("Add")
 list_box = gui.Listbox(values=fns.get_todos(), key="todo_select", 
                        enable_events=True, size=[45,10])
 edit_button = gui.Button("Edit")
+complete_button = gui.Button("Complete")
 
 
 window = gui.Window("To-do app",
-                    layout=[[label], [input_box, add_button], [list_box, edit_button]],
+                    layout=[[label],
+                            [input_box, add_button],
+                            [list_box, edit_button, complete_button]],
                     font=("Helvetica", 18))
 
 while True:
@@ -36,6 +39,13 @@ while True:
             window["todo_select"].update(values=todos) #real-time update
         case "todo_select":
             window["todo"].update(value=values[event][0])
+        case "Complete":
+            todo_to_complete = values["todo_select"][0]
+            todos = fns.get_todos
+            todos.remove(todo_to_complete)
+            fns.save_todos(todos)
+            window["todo_select"].update(values = todos)
+            window["todo"].update(value = "")
         case gui.WIN_CLOSED:
             break
 
