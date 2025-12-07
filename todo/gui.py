@@ -1,6 +1,10 @@
 import functions as fns
 import FreeSimpleGUI as gui
+import time as tm
 
+gui.theme("GreenMono")
+
+date_label = gui.Text("", key="time")
 label = gui.Text("Type your to-do")
 input_box = gui.InputText(tooltip="Enter to-do", key="todo")
 add_button = gui.Button("Add")
@@ -13,16 +17,21 @@ exit_button = gui.Button("Exit")
 
 
 window = gui.Window("To-do app",
-                    layout=[[label],
+                    layout=[[date_label],
+                            [label],
                             [input_box, add_button],
                             [list_box, edit_button, complete_button],
                             [exit_button]],
                     font=("Helvetica", 18))
 
 while True:
-    event, values = window.read()
-    print(event, "event")
-    print(values)
+    event, values = window.read(timeout=200)
+
+    if event in (gui.WIN_CLOSED, None):
+        break
+
+    window["time"].update(value=tm.strftime("%b %d, %Y %H:%M:%S"))
+    
     match(event):
         case "Add":
             todos = fns.get_todos()
@@ -31,27 +40,30 @@ while True:
             fns.save_todos(todos)
             window["todo_select"].update(values=todos)
         case "Edit":
-            todo_to_edit = values["todo_select"][0]
-            new_todo = values["todo"] + "\n"
+            try:
+                todo_to_edit = values["todo_select"][0]
+                new_todo = values["todo"] + "\n"
 
-            todos = fns.get_todos()
-            index = todos.index(todo_to_edit)
-            todos[index] = new_todo
-            fns.save_todos(todos)
-
-            window["todo_select"].update(values=todos) #real-time update
+                todos = fns.get_todos()
+                index = todos.index(todo_to_edit)
+                todos[index] = new_todo
+                fns.save_todos(todos)
+                window["todo_select"].update(values=todos) #real-time update
+            except IndexError:
+                gui.popup("Please select an item first", font=("Helvetica", 18))
         case "todo_select":
             window["todo"].update(value=values[event][0])
         case "Complete":
-            todo_to_complete = values["todo_select"][0]
-            todos = fns.get_todos()
-            todos.remove(todo_to_complete)
-            fns.save_todos(todos)
-            window["todo_select"].update(values = todos)
-            window["todo"].update(value = "")
+            try:
+                todo_to_complete = values["todo_select"][0]
+                todos = fns.get_todos()
+                todos.remove(todo_to_complete)
+                fns.save_todos(todos)
+                window["todo_select"].update(values = todos)
+                window["todo"].update(value = "")
+            except IndexError:
+                gui.popup("Please select an item first", font=("Helvetica", 18))
         case "Exit":
-            break
-        case gui.WIN_CLOSED:
             break
 
 window.close()
